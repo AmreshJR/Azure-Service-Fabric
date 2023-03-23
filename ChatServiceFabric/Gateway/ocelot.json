@@ -1,0 +1,66 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:19081/ChatServiceFabric/Gateway"
+  },
+  "Routes": [
+    //{
+    //  "DownstreamPathTemplate": "/ChatServiceFabric/ChatService/api/Account/{everything}",
+    //  "DownstreamScheme": "http",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": 19081
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/api/Account/{everything}",
+    //  "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+    //},    
+    {
+      "DownstreamPathTemplate": "/ChatServiceFabric/Authentication/api/Account/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 19081
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Account/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/ChatServiceFabric/ChatService/api/Chat/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 19081
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Chat/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/ChatServiceFabric/ChatService/api/ChatGPT/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 19081
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ChatGPT/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    }
+  ]
+}
+
+
+

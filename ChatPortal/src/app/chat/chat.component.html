@@ -1,0 +1,244 @@
+<ngx-ui-loader></ngx-ui-loader>
+<div style="position: relative">
+  <!-- the position of the parent container must be set to relative -->
+  <!-- It is really important to set loaderId for non-master loader -->
+  <ngx-ui-loader [loaderId]="'loader-02'"></ngx-ui-loader>
+</div>
+<div class="main-container">
+  <div class="py-3 px-3">
+    <div class="row overflow-hidden shadow">
+      <!-- Users box-->
+      <div class="col-4 px-0">
+        <div class="bg-white">
+          <div class=" menu-bar">
+            <div *ngIf="showUsers"> 
+              <span>
+                <i class='bx bx-left-arrow-alt back-to-recent pt-2 ps-2' (click)="showUsers = !showUsers" ></i>
+              </span>
+            </div>
+            <div class="w-100" *ngIf="showUsers">
+              <span class="">New chat</span>
+            </div>
+            <div *ngIf="showUsers">
+            </div>
+            <div class="item-right" *ngIf="!showUsers" >
+              <span>
+                <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" *ngIf="!currentChat.profilePicture"
+                alt="user" width="50" class="rounded-circle">
+                <img [src]="currentChat.profilePicture" *ngIf="currentChat.profilePicture" alt="user" width="50"
+                class="rounded-circle">
+              </span>
+            </div>
+            <div class="item-right">
+              <span class="icon">
+                <i class='bx bxs-comment-add  go-to-new newchat' (click)="showUsers = !showUsers" *ngIf="!showUsers"></i>
+                <span class="dropdown"  >
+                  <a type="button" id="dottedmenu" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class='bx bx-dots-vertical-rounded'></i> 
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dottedmenu">
+                    <a class="dropdown-item" role="button" (click)="logout()" href="#">Logout</a>
+                  </div>
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="row searchBox animate" *ngIf="!showUsers" [@fadeAnimation]="'visible'">
+            <div class="col-sm-12 searchBox-inner">
+              <div class="form-group has-feedback">
+                <input id="searchText" [(ngModel)]="chatSearchInput" (keyup)="searchChatList()" type="text"
+                  class="form-control shadow-none" name="searchText" placeholder="Search">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+              </div>
+            </div>
+          </div>
+          <div class="messages-box recent-chat animate" *ngIf="!showUsers" [@fadeAnimation]="'visible'">
+            <div class="" *ngFor="let chat of chatSearchList; index as i;">
+              <div class="user-chat active text-white"
+                [ngClass]="{'active':currentChat.chatIndex == i ,'inactive':currentChat.chatIndex != i,'chatlist':currentChat.chatIndex != i }"
+                (click)="changeSelectedUser(i,chat);readMessage()">
+                <div class="user-chat-profile">
+                  <div class="">
+                    <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="40" class="rounded-circle">
+                  </div>
+                </div>
+                <div class="user-chat-text">
+                  <div class="user-chat-info">
+                    <div class="username capitalize">
+                      <span class="">{{chat.receiverName}}</span>
+                    </div>
+                    <div class="date">
+                      <span class="">{{chat.messageTime | chatDate}}</span>
+                    </div>
+                  </div>
+                  <div class="use-chat-message">
+                    <div class="message capitalize">
+                      <span class=""> {{chat.lastMessage | decryptMessage | ellipse }}</span>
+                      <!-- <span class=""> {{chat.lastMessage | decryptMessage | ellipse}}</span> -->
+                    </div>
+                    <div>
+                      <span class="not_icon" *ngIf="chat.unreadMessageCount > 0">{{chat.unreadMessageCount}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="px-4 py-5 chat-box bg-white" *ngIf="chatSearchList.length <= 0 && chatList.length > 0">
+              <p class="text-small mb-0 text-muted messsage no-recent">No User Found</p>
+            </div>
+            <div class="px-4 py-5 chat-box bg-white" *ngIf="chatSearchList.length <= 0 && chatList.length <= 0">
+              <p class="text-small mb-0 text-muted messsage no-recent">Start a conversation</p>
+            </div>
+          </div>
+          <div class="row searchBox animate"  *ngIf="showUsers" [@fadeAnimation]="'visible'">
+            <div class="col-sm-12 searchBox-inner">
+              <div class="form-group has-feedback">
+                <input id="searchText" [(ngModel)]="userSearchInput" (keyup)="searchUserList()" type="text"
+                  class="form-control shadow-none" name="searchText" placeholder="Search">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+              </div>
+            </div>
+          </div>
+          <div class="messages-box new-chat animate" *ngIf="showUsers" [@fadeAnimation]="'visible'">
+            <div class="list-group rounded-0 chatlist" *ngFor="let users of userSearchList; index as i;"
+              (click)="startNewChat(users)">
+              <a class="list-group-item list-group-item-action text-white rounded-0">
+                <div class="media">
+                  <div class="media-body ml-auto">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                      <span class="d-flex ">
+                        <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" *ngIf="!users.profilePicture"
+                          alt="user" width="50" class="rounded-circle">
+                        <img [src]="users.profilePicture" *ngIf="users.profilePicture" alt="user" width="50"
+                          class="rounded-circle">
+                        <h6 class="mb-0 mt-10" style="padding:5px;text-align: center;margin-top: 10px;color: black;">
+                          {{users.userName}}</h6>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Chat Box-->
+      <div class="col-8 px-0">
+        <div class="profile-bar" *ngIf="!InitialLoad && currentChat.message.length >= 0">
+          <span class="d-flex">
+            <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50"
+              class="rounded-circle icon-border">
+            <h6 class="capitalize">{{currentChat.userName}}</h6>
+          </span>
+        </div>
+        <div class="px-4 py-5 chat-box bg-white" #scrollMe [scrollTop]="scrollMe.scrollHeight"
+          (scroll)="pagenateMessage($event)" *ngIf="currentChat.message.length > 0" (click)="hideEmojiPopup()">
+          <div class="" *ngFor="let message of currentChat.message; index as i;" #messages>
+            <!-- Sender Message-->
+
+            <div class="media mb-3 w-100 push-left" [attr.id]="'message-'+message.messageId">
+
+              <div class="media-body ml-3 push-left" *ngIf="message.senderId != userId">
+                <div class="sender-message rounded py-2 px-3 mb-2 messsage message-content">
+                  <p class="text-small mb-0 text-muted messsage">{{message.messageContent | decryptMessage}}</p>
+                </div>
+                <p class="small text-muted">{{message.createdOn | chatDate}} </p>
+              </div>
+            </div>
+
+            <!-- Reciever Message-->
+            <div class="media ml-auto w-100 mb-3" style="float: right;" *ngIf="message.senderId == userId">
+              <div *ngIf="!message.editMode" class="media-body push-right">
+                <div class="bg-primary rounded py-2 px-3 mb-2 messsage message-content" style="margin-left: auto;">
+                  <p class="text-small mb-0 text-white messsage">{{message.messageContent | decryptMessage}}</p>
+                </div>
+                <p class="small text-muted push-right">{{message.createdOn | chatDate}}</p>
+              </div>
+              <div *ngIf="message.editMode" class="media-body push-right">
+                <form class="push-right"  (ngSubmit)="saveMessage(message)" class="mb-2">
+                  <textarea name="editableBox" [(ngModel)]="message.editableContent" class="form-control mb-2"></textarea>
+                  <div class="d-flex justify-content-end">
+                    <a role="button" type="submit" (click)="showCancelEdit(message)"><i class='bx bx-x bx-rotate-90  icon-size' ></i></a>
+                    <a role="button" type="submit" (click)="saveMessage(message)" ><i class='bx bx-check icon-size' ></i></a>
+                  </div>
+                </form>
+              </div>
+              <div class="ml-auto">
+                <div class="dropdown" *ngIf="!message.editMode" >
+                  <a type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class='bx bx-dots-vertical-rounded'></i>
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" (click)="showCancelEdit(message)"  href="#">Edit</a>
+                    <a class="dropdown-item" href="#">Delete</a>
+                    <a class="dropdown-item" href="#">Delete for All</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="px-4 py-5 chat-box bg-white" *ngIf="currentChat.message && currentChat.message.length <= 0 && !InitialLoad" (click)="hideEmojiPopup()">
+          <p class="text-small mb-0 text-muted messsage no-recent">No Recent Chats</p>
+        </div>
+        <div class="px-4 py-5 initial-chat-box text-center" *ngIf="InitialLoad" >
+          <div class="initial-chat">    
+            <div class="device-image">
+              <span>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 303 172" width="360" height="204.35643564356437"><path fill="#ACE6F6" fill-rule="evenodd" d="M229.565 160.229C262.212 149.245 286.931 118.241 283.39 73.4194C278.009 5.31929 212.365 -11.5738 171.472 8.48673C115.998 35.6999 108.972 40.1612 69.2388 40.1612C39.645 40.1612 9.51318 54.4147 5.7467 92.952C3.0166 120.885 13.9985 145.267 54.6373 157.716C128.599 180.373 198.017 170.844 229.565 160.229Z" clip-rule="evenodd" class="colorDAF7F3 svgShape"></path><path fill="#FFFFFF" fill-rule="evenodd" d="M131.589 68.9422C131.593 68.9422 131.596 68.9422 131.599 68.9422 137.86 68.9422 142.935 63.6787 142.935 57.1859 142.935 50.6931 137.86 45.4297 131.599 45.4297 126.518 45.4297 122.218 48.8958 120.777 53.6723 120.022 53.4096 119.213 53.2672 118.373 53.2672 114.199 53.2672 110.815 56.7762 110.815 61.1047 110.815 65.4332 114.199 68.9422 118.373 68.9422 118.377 68.9422 118.381 68.9422 118.386 68.9422H131.589zM105.682 128.716C109.186 128.716 112.026 125.908 112.026 122.446 112.026 118.983 109.186 116.176 105.682 116.176 104.526 116.176 103.442 116.481 102.509 117.015L102.509 116.959C102.509 110.467 97.1831 105.203 90.6129 105.203 85.3224 105.203 80.8385 108.616 79.2925 113.335 78.6052 113.143 77.88 113.041 77.1304 113.041 72.7503 113.041 69.1995 116.55 69.1995 120.878 69.1995 125.207 72.7503 128.716 77.1304 128.716 77.1341 128.716 77.1379 128.716 77.1416 128.716H105.682L105.682 128.716z" clip-rule="evenodd" class="colorFFF svgShape"></path><rect width="50.58" height="100.068" x=".445" y=".55" fill="#4B89AC" stroke="#314D74" rx="7.5" transform="rotate(6 -391.775 121.507) skewX(.036)" class="color42CBA5 svgShape colorStroke316474 svgStroke"></rect><rect width="50.403" height="99.722" x=".445" y=".55" fill="#FFFFFF" stroke="#314D74" rx="7.5" transform="rotate(6 -356.664 123.217) skewX(.036)" class="colorFFF svgShape colorStroke316474 svgStroke"></rect><path fill="#E4FCF9" stroke="#314D74" d="M57.1609 51.7354L48.5917 133.759C48.2761 136.78 45.5713 138.972 42.5503 138.654L9.58089 135.189C6.55997 134.871 4.36688 132.165 4.68251 129.144L13.2517 47.1204C13.5674 44.0992 16.2722 41.9075 19.2931 42.2251L24.5519 42.7778L47.0037 45.1376L52.2625 45.6903C55.2835 46.0078 57.4765 48.7143 57.1609 51.7354Z" class="colorEEFEFA svgShape colorStroke316474 svgStroke"></path><path fill="#446491" d="M26.2009 102.937C27.0633 103.019 27.9323 103.119 28.8023 103.21C29.0402 101.032 29.2706 98.8437 29.4916 96.6638L26.8817 96.39C26.6438 98.5681 26.4049 100.755 26.2009 102.937ZM23.4704 93.3294L25.7392 91.4955L27.5774 93.7603L28.7118 92.8434L26.8736 90.5775L29.1434 88.7438L28.2248 87.6114L25.955 89.4452L24.1179 87.1806L22.9824 88.0974L24.8207 90.3621L22.5508 92.197L23.4704 93.3294ZM22.6545 98.6148C22.5261 99.9153 22.3893 101.215 22.244 102.514C23.1206 102.623 23.9924 102.697 24.8699 102.798C25.0164 101.488 25.1451 100.184 25.2831 98.8734C24.4047 98.7813 23.5298 98.6551 22.6545 98.6148ZM39.502 89.7779C38.9965 94.579 38.4833 99.3707 37.9862 104.174C38.8656 104.257 39.7337 104.366 40.614 104.441C41.1101 99.6473 41.6138 94.8633 42.1271 90.0705C41.2625 89.9282 40.3796 89.8786 39.502 89.7779ZM35.2378 92.4459C34.8492 96.2179 34.4351 99.9873 34.0551 103.76C34.925 103.851 35.7959 103.934 36.6564 104.033C37.1028 100.121 37.482 96.1922 37.9113 92.2783C37.0562 92.1284 36.18 92.0966 35.3221 91.9722C35.2812 92.1276 35.253 92.286 35.2378 92.4459ZM31.1061 94.1821C31.0635 94.341 31.0456 94.511 31.0286 94.6726C30.7324 97.5678 30.4115 100.452 30.1238 103.348L32.7336 103.622C32.8582 102.602 32.9479 101.587 33.0639 100.567C33.2611 98.5305 33.5188 96.4921 33.6905 94.4522C32.8281 94.3712 31.9666 94.2811 31.1061 94.1821Z" class="color316474 svgShape"></path><path fill="#FFFFFF" stroke="#314D74" d="M17.892 48.4889C17.7988 49.3842 18.4576 50.1945 19.3597 50.2923 20.2665 50.3906 21.0855 49.7332 21.1792 48.8333 21.2724 47.938 20.6136 47.1277 19.7115 47.0299 18.8047 46.9316 17.9857 47.5889 17.892 48.4889zM231.807 136.678L197.944 139.04C197.65 139.06 197.404 139.02 197.249 138.96 197.208 138.945 197.179 138.93 197.16 138.918L196.456 128.876C196.474 128.862 196.5 128.843 196.538 128.822 196.683 128.741 196.921 128.668 197.215 128.647L231.078 126.285C231.372 126.265 231.618 126.305 231.773 126.365 231.814 126.381 231.842 126.395 231.861 126.407L232.566 136.449C232.548 136.463 232.522 136.482 232.484 136.503 232.339 136.584 232.101 136.658 231.807 136.678z" class="colorFFF svgShape colorStroke316474 svgStroke"></path><path fill="#FFFFFF" d="M283.734 125.679L144.864 135.363C141.994 135.563 139.493 133.4 139.293 130.54L133.059 41.6349C132.858 38.7751 135.031 36.2858 137.903 36.0856L276.773 26.4008C279.647 26.2005 282.144 28.364 282.345 31.2238L288.578 120.129C288.779 122.989 286.607 125.478 283.734 125.679Z" class="colorFFF svgShape"></path><path stroke="#314D74" d="M144.864 135.363C141.994 135.563 139.493 133.4 139.293 130.54L133.059 41.6349C132.858 38.7751 135.031 36.2858 137.903 36.0856L276.773 26.4008C279.647 26.2004 282.144 28.364 282.345 31.2238L288.578 120.129C288.779 122.989 286.607 125.478 283.734 125.679" class="colorStroke316474 svgStroke" fill="none"></path><path fill="#E4FCF9" stroke="#314D74" d="M278.565 121.405L148.68 130.463C146.256 130.632 144.174 128.861 144.012 126.55L138.343 45.695C138.181 43.3846 139.994 41.3414 142.419 41.1723L272.304 32.1142C274.731 31.945 276.81 33.7166 276.972 36.0271L282.641 116.882C282.803 119.193 280.992 121.236 278.565 121.405Z" class="colorEEFEFA svgShape colorStroke316474 svgStroke"></path><path fill="#4B89AC" stroke="#314D74" d="M230.198 129.97L298.691 125.193L299.111 131.189C299.166 131.97 299.013 132.667 298.748 133.161C298.478 133.661 298.137 133.887 297.825 133.909L132.794 145.418C132.482 145.44 132.113 145.263 131.777 144.805C131.445 144.353 131.196 143.684 131.141 142.903L130.721 136.907L199.215 132.131C199.476 132.921 199.867 133.614 200.357 134.129C200.929 134.729 201.665 135.115 202.482 135.058L227.371 133.322C228.188 133.265 228.862 132.782 229.345 132.108C229.758 131.531 230.05 130.79 230.198 129.97Z" class="color42CBA5 svgShape colorStroke316474 svgStroke"></path><path fill="#FFFFFF" stroke="#314D74" d="M230.367 129.051L300.275 124.175L300.533 127.851C300.591 128.681 299.964 129.403 299.13 129.461L130.858 141.196C130.025 141.254 129.303 140.627 129.245 139.797L128.987 136.121L198.896 131.245C199.485 132.391 200.709 133.147 202.084 133.051L227.462 131.281C228.836 131.185 229.943 130.268 230.367 129.051Z" class="colorFFF svgShape colorStroke316474 svgStroke"></path><circle r="15.997" fill="#4B89AC" stroke="#314D74" transform="rotate(-3.989 1304.861 -2982.552) skewX(.021)" class="color42CBA5 svgShape colorStroke316474 svgStroke"></circle><path fill="#FFFFFF" stroke="#314D74" d="M208.184 87.1094L204.777 84.3593C204.777 84.359 204.776 84.3587 204.776 84.3583C203.957 83.6906 202.744 83.8012 202.061 84.6073C201.374 85.4191 201.486 86.6265 202.31 87.2997L202.312 87.3011L207.389 91.4116C207.389 91.4119 207.389 91.4121 207.389 91.4124C208.278 92.1372 209.611 91.9373 210.242 90.9795L218.283 78.77C218.868 77.8813 218.608 76.6968 217.71 76.127C216.817 75.5606 215.624 75.8109 215.043 76.6939L208.184 87.1094Z" class="colorFFF svgShape colorStroke316474 svgStroke"></path></svg>
+                </span>
+            </div>   
+            <div>
+              <div class="app-name">
+                <span>Chat App</span>
+              </div>
+              <div>
+                Send and recive message over web.
+              </div>
+            </div> 
+            <div class="text-center enc-text">
+              <i class='bx bx-lock-alt mb-0'></i>
+              <span class="text-small mb-0 text-muted">End-to-end encryption</span>
+            </div>    
+          </div>
+        </div>
+        <div>
+        </div>
+        <!-- Typing area -->
+        <form [formGroup]="messageForm" *ngIf="!InitialLoad" (ngSubmit)="onSubmit()" action="#" class="bg-light message-form">
+          <emoji-mart class="emoji-popup" title="Pick your emoji…" emoji="point_up" set="google" [showPreview]="false"
+          [darkMode]="false" [useButton]="true" [emojiTooltip]="false" [virtualize]="true" *ngIf="showEmoji"
+          (emojiClick)="addEmoji($event,emojiInput)"></emoji-mart>
+        <div class="">
+          <button id="button-addon2" type="button" class="btn btn-link shadow-none  send-btn"
+            (click)="showEmoji = !showEmoji"> <i class='bx bx-smile show-emoji'></i></button>
+        </div>
+        <div class="">
+          <button id="button-addon2" type="button" class="btn btn-link shadow-none  send-btn">
+            <i class='bx bxs-file-plus'></i>
+          </button>
+            </div>
+            <input  type="text" formControlName="message" #emojiInput placeholder="Type a message" (focus)="readMessage()" 
+            aria-describedby="button-addon2" 
+            class="message-input"  >
+            <!-- <input type="text" formControlName="message" #emojiInput (focus)="readMessage()"
+              placeholder="Type a message" aria-describedby="button-addon2"
+              style="border-radius:10px !important;z-index: 0 !important"
+              class="form-control shadow-none rounded-0 border-0 py-4 bg-light"> -->
+          <div class="">
+            <button [disabled]="!messageForm.valid && chatList.length > 0" id="button-addon2" type="submit"
+              class="btn btn-link shadow-none  send-btn" (focus)="readMessage()" (click)="hideEmojiPopup()"> <i
+                class='bx bxs-paper-plane' ></i></button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+  <!-- <div class="chat-icon" (click)="openChatbot()">
+    <i class='bx bx-bot'></i>
+  </div> -->
+  <div class="my-other-component" [ngStyle]="showChatBot?{'display': 'block'} : {'display': 'none'}">
+    <app-chat-bot></app-chat-bot>
+  </div>
+</div>
